@@ -1,0 +1,42 @@
+
+
+{% extends "base.html" %}
+{% block delete %}
+
+	<div class = "spacer">
+		<article class = "item">
+
+		are you sure you want to delete <b>{{item.word}}</b>?
+		<br><br>
+		this can't be undone. 
+		<br><br><br>
+		<a href = "/d/{{item.id}}">
+		<span class = "delete">
+		delete
+		</span>
+		</a>
+
+
+
+		</article>
+	</div>
+
+
+
+
+
+	<div class = "spacer">
+	<a href="javascript:history.back()">
+	<article class = "item">
+
+	<span class = "back">
+	&#8629;
+	</span>
+
+	</article>
+	</a>
+	</div>
+
+	
+{% endblock %}
+

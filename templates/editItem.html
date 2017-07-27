@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block edit %}
+
+	<div class = "spacer">
+		<article class = "item">
+
+		<form method="post" action="/edit/{{item.id}}">
+          <input name="word" placeholder="{{item.word}}" class = "input" style = "font-size:20px; height:40px">
+          <!-- <label for="to">Who do you want to say it to?</label> -->
+          <textarea name = "definition" placeholder = "{{item.definition}}" class = "input" style = "height:65px"></textarea>
+          <select name = "category" class = "input" style = "height:40px">
+				  <option value="noun" {% if item.category == 'noun'%} selected {% endif %}>noun</option>
+				  <option value="verb" {% if item.category == 'verb'%} selected {% endif %}>verb</option>
+				  <option value="adverb" {% if item.category == 'adverb'%} selected {% endif %}>adverb</option>
+				  <option value="adjective" {% if item.category == 'adjective'%} selected {% endif %}>adjective</option>
+			</select>
+          <br><button style = "width:100%; height:40px; font-size:25px" class = "input">update</button>
+      </form>
+
+		</article>
+	</div>
+
+
+
+
+
+	<div class = "spacer">
+	<a href="javascript:history.back()">
+	<article class = "item">
+
+	<span class = "back">
+	&#8629;
+	</span>
+
+	</article>
+	</a>
+	</div>
+
+	
+{% endblock %}

@@ -1,0 +1,53 @@
+
+
+{% extends "base.html" %}
+{% block item %}
+
+	<div class = "spacer">
+		<article class = "item">
+
+		<h1>
+		{{item.word}}
+		</h1>
+
+		{{item.definition}}
+
+
+		{% if authorized %}
+
+		<br><br><br>
+		<span class = "editDelete">
+		<a href = "/edit/{{item.id}}">
+		<span>edit</span>
+		</a> 
+		|
+		<a href = "/delete/{{item.id}}">
+		<span>delete</span>
+		</a>
+		</span>
+		{% endif %}
+
+		</article>
+	</div>
+
+
+
+
+
+	<div class = "spacer">
+	<a href="javascript:history.back()">
+	<article class = "item">
+
+	<span class = "back">
+	&#8629;
+	</span>
+
+	</article>
+	</a>
+	</div>
+
+	
+
+
+{% endblock %}
+

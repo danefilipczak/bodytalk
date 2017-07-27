@@ -1,0 +1,43 @@
+
+
+{% extends "base.html" %}
+{% block login %}
+
+	<div class = "spacer" id = "signinButton">
+		<!-- <article class = "item"> -->
+
+		
+	 <span class="g-signin"
+            data-scope="openid email"
+            data-clientid="717235498767-uuvq926tkpptj461bvgsos53purjqvvs.apps.googleusercontent.com"
+            data-redirecturi="postmessage"
+            data-accesstype="offline"
+            data-cookiepolicy="single_host_origin"
+            data-callback="signInCallback"
+            data-approvalprompt="force">
+          </span>
+ 	
+
+		<!-- </article> -->
+	</div>
+
+
+
+
+
+	<div class = "spacer">
+	<a href="javascript:history.back()">
+	<article class = "item">
+
+	<span class = "back">
+	&#8629;
+	</span>
+
+	</article>
+	</a>
+	</div>
+
+	
+
+
+{% endblock %}
