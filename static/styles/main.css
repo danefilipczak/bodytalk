@@ -111,7 +111,7 @@ body a:visited, a:link {
 	position:fixed;
 	left:0px;
 	width:37%;
-	height:50%;
+	/*height:50%;*/
 	overflow:scroll;
 	background-color:rgba(208, 190, 190, 0.74);
 }
@@ -137,7 +137,13 @@ body a:visited, a:link {
 	background-color:rgb(234, 181, 27);
 }
 
-
+.yours{
+	background-color:black;
+	color:white;
+	display:block;
+	text-align:center;
+	width:200%;
+}
 
 
 .editDelete{
@@ -147,6 +153,7 @@ body a:visited, a:link {
     -webkit-justify-content: space-around; /* Safari 6.1+ */
     display: flex;
     justify-content: space-around;
+    min-width:150px;
 }
 
 .back{

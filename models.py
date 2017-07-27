@@ -5,19 +5,6 @@ from sqlalchemy import create_engine
 from passlib.apps import custom_app_context as pwd_context
 Base = declarative_base()
 
-#ADD YOUR USER MODEL HERE
-# class User(Base):
-# 	__tablename__ = 'user'
-# 	id = Column(Integer, primary_key=True)
-# 	username = Column(String(32), index = True)
-# 	password_hash = Column(String(64))
-
-# 	def hash_password(self, password):
-# 		self.password_hash = pwd_context.encript(password)
-
-# 	def verify_password(self, password):
-# 		return pwd_context.verify(password, self.password_hash)
-
 
 class User(Base):
     __tablename__ = 'user'
@@ -42,9 +29,17 @@ class Entry(Base):
 	#picture = Column(String)
 	definition = Column(String)
 	example = Column(String)
-	creatorID = Column(Integer, ForeignKey('user.ID'))
-	user = relationship(User)
+	creatorEmail = Column(String)
+	#user = relationship(User)
 	#price = Column(String)
+	@property
+	def serialize(self):
+		return {
+			'id':self.id,
+			'word':self.word,
+			'category':self.category,
+			'definition':self.definition
+		}
 	'''
 	@property
 	def serialize(self):

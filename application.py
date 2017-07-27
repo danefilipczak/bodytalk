@@ -27,14 +27,21 @@ app.secret_key = "super secret key"
 
 '''
 
-add some scripts to the base template
-
 
 '''
+categories = ['noun', 'verb', 'adverb', 'adjective', 'other']
+
+def getItems():
+    items = session.query(Entry).all()
+    return items
+
+
+
 @app.route('/gconnect', methods=['POST', 'GET'])
 def gconnect():
+    items = getItems()
     if request.method == 'GET':
-        return render_template('main.html', flash = 'welcome, '+login_session['name'], authorized = True)
+        return render_template('main.html', email = login_session['email'], flash = 'welcome, '+login_session['name'], authorized = True, categories = categories, items = items)
     if request.method == 'POST':
         # Validate state token
         if request.args.get('state') != login_session['state']:
@@ -117,14 +124,7 @@ def gconnect():
 
         print(data)
 
-        # output = ''
-        # output += '<h1>Welcome, '
-        # output += login_session['username']
-        # output += '!</h1>'
-        # output += '<img src="'
-        # output += login_session['picture']
-        # output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
-        # #flash("you are now logged in as %s" % login_session['username'])
+     
         print "done!"
         
         return 'hellow mor'
@@ -156,7 +156,7 @@ def gdisconnect():
         del login_session['name']
         # response = make_response(json.dumps('Successfully disconnected.'), 200)
         # response.headers['Content-Type'] = 'application/json'
-        return render_template('main.html', authorized = False)
+        return render_template('main.html', authorized = False, items = getItems(), categories = categories)
     else:
         response = make_response(json.dumps('Failed to revoke token for given user.', 400))
         response.headers['Content-Type'] = 'application/json'
@@ -168,29 +168,24 @@ def gdisconnect():
 def showLogin():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in xrange(32))
     login_session['state'] = state
-    return render_template('login.html', STATE = login_session['state'])
+    return render_template('login.html', STATE = login_session['state'], items = getItems(), categories = categories)
 
 
 @app.route('/')
 def homePage():
-    # if login_session['username'] is not :
-    #     authorized = True
-    # assert login_session['username']:
-    #     authorized = True
-    # except:
-    #     authorized = False
 
     if 'username' in login_session:
         authorized = True
     else:
         authorized = False
 
+    if 'email' in login_session:
+        email = login_session['email']
+    else:
+        email = None
+
     items = session.query(Entry).all()
-    categories = []
-    for i in items:
-        if not i in categories:
-            categories.append(i.category)
-    return render_template('main.html', categories = categories, items = items, authorized = authorized)
+    return render_template('main.html', categories = categories, items = items, authorized = authorized, email = email)
 
 
 
@@ -199,12 +194,23 @@ def showItem(itemID):
     item = session.query(Entry).filter_by(id = itemID).one()
 
     items = session.query(Entry).all()
-    categories = []
-    for i in items:
-        if not i in categories:
-            categories.append(i.category)
 
-    return render_template('item.html', item = item, category = item.category, categories = categories, authorized = True)
+    if 'username' in login_session:
+        authorized = True
+    else:
+        authorized = False
+
+    if 'email' in login_session:
+        if item.creatorEmail == login_session['email']:
+            permitted = True
+        else: 
+            permitted = False
+    else:
+        permitted = False
+
+    #permitted
+
+    return render_template('item.html', item = item, category = item.category, categories = categories, authorized = authorized, permitted = permitted)
 
 @app.route('/delete/<itemID>')
 def confirmDelete(itemID):
@@ -212,12 +218,13 @@ def confirmDelete(itemID):
     item = session.query(Entry).filter_by(id = itemID).one()
 
     items = session.query(Entry).all()
-    categories = []
-    for i in items:
-        if not i in categories:
-            categories.append(i.category)
 
-    return render_template('deleteItem.html', item = item, categories = categories, authorized = True)
+    if 'username' in login_session:
+        authorized = True
+    else:
+        authorized = False
+
+    return render_template('deleteItem.html', item = item, categories = categories, authorized = authorized)
 
 @app.route('/add', methods = ['GET', 'POST'])
 def add():
@@ -228,25 +235,34 @@ def add():
         word = request.form['word'].lower()
         definition = request.form['definition'].lower()
 
-        newWord = Entry(word = word, definition = definition, category = category)
+        newWord = Entry(word = word, definition = definition, category = category, creatorEmail = login_session['email'])
         session.add(newWord)
         session.commit()
 
         items = session.query(Entry).all()
-        categories = []
-        for i in items:
-            if not i in categories:
-                categories.append(i.category)
 
-        return render_template('main.html', categories = categories, items = items, authorized = True)
+        if 'username' in login_session:
+            authorized = True
+        else:
+            authorized = False
+
+        if 'email' in login_session:
+            email = login_session['email']
+
+        return render_template('main.html', categories = categories, items = items, authorized = authorized, email=email)
         #return 'postinnn'
     if request.method == 'GET':
         items = session.query(Entry).all()
-        categories = []
-        for i in items:
-            if not i in categories:
-                categories.append(i.category)
-        return render_template('addItem.html', categories = categories, authorized = True)
+
+        if 'username' in login_session:
+            authorized = True
+        else:
+            authorized = False
+
+        if 'email' in login_session:
+            email = login_session['email']
+
+        return render_template('addItem.html', categories = categories, authorized = True, email=email)
 
 
 
@@ -269,37 +285,37 @@ def edit(itemID):
         session.commit()
 
         items = session.query(Entry).all()
-        categories = []
-        for i in items:
-            if not i in categories:
-                categories.append(i.category)
 
-        return render_template('main.html', categories = categories, items = items, authorized = True)
+        if 'username' in login_session:
+            authorized = True
+        else:
+            authorized = False
+
+        return render_template('main.html', categories = categories, items = items, authorized = authorized)
         #return 'postinnn'
     if request.method == 'GET':
         item = session.query(Entry).filter_by(id = itemID).one()
         items = session.query(Entry).all()
-        categories = []
-        for i in items:
-            if not i in categories:
-                categories.append(i.category)
-        return render_template('editItem.html', item = item, categories = categories, authorized = True)
+
+        if 'username' in login_session:
+            authorized = True
+        else:
+            authorized = False
+        return render_template('editItem.html', item = item, categories = categories, authorized = authorized)
 
 
-
+@app.route('/fetch')
+def fetchAll():
+    all = session.query(Entry).all()
+    dump = []
+    for i in all:
+        dump.append(i.serialize)
+    
+    return jsonify(dump)
 
 
 @app.route('/d/<itemID>')
 def deleteItem(itemID):
-    #try to delete the item. if it's already deleted, don't give the flash screen
-    #make sure to actually requery the items
-
-
-
-
-
-
-
 
     try:
 
@@ -308,30 +324,27 @@ def deleteItem(itemID):
         session.commit()
     except:
         items = session.query(Entry).all()
-        categories = []
-        for i in items:
-            if not i in categories:
-                categories.append(i.category)
-        return render_template('main.html', categories = categories, items = items, authorized = True)
+
+        if 'username' in login_session:
+            authorized = True
+        else:
+            authorized = False
+
+        return render_template('main.html', categories = categories, items = items, authorized = authorized)
 
     
     items = session.query(Entry).all()
-    categories = []
-    for i in items:
-        if not i in categories:
-            categories.append(i.category)
 
-    return render_template('main.html', categories = categories, items = items, flash = d.word + " has been deleted.", authorized = True)
+    if 'username' in login_session:
+        authorized = True
+    else:
+        authorized = False
+
+    return render_template('main.html', categories = categories, items = items, flash = d.word + " has been deleted.", authorized = authorized)
 
 
 @app.route('/category/<category>')
 def revealCategory(category):
-    #items = mockItems
-    # filteredItems = []
-    # for i in mockItems:
-    #     if i['category'] == category:
-    #         filteredItems.append(i)
-
 
     if 'username' in login_session:
         authorized = True
@@ -340,70 +353,21 @@ def revealCategory(category):
 
     items = session.query(Entry).all()
 
-    categories = []
-    for i in items:
-        if not i in categories:
-            categories.append(i.category)
 
 
     filteredItems = session.query(Entry).filter_by(category = category)
 
-
-
-    return render_template('main.html', categories = categories, category = category, items = filteredItems, authorized = authorized)
-
-
-
-
-# @app.route('/item')
-# def showItem():
-#     return render_template('item.html', item = {'name': 'bob', 'description':"for the love of the world, the earth, and everything in it"})
-
-# #ADD @auth.verify_password here
-# @auth.verify_password
-# def verify_password(username, password):
-#     user = session.query(User).filter_by(username = username).first()
-#     if not user or not user.verify_password(password):
-#         return False
-#     g.user = user
-#     return True
+    if 'email' in login_session:
+        email = login_session['email']
+    else:
+        email = None
 
 
 
-# @app.route('/users', methods = ['POST'])
-# def new_user():
-#     password = request.json.get('password')
-#     username = request.json.get('username')
-#     if username is None or password is None:
-#         abort(400)
-#     if session.query(User).filter_by(username = username).first() is not None:
-#         #abort(400)
-#         print "existing user"
-#     user = User(username = username)
-#     user.hash_password(password)
-#     session.add(user)
-#     session.commit()
-#     return jsonify({'username': user.username}), 201
+    return render_template('main.html', categories = categories, category = category, items = filteredItems, authorized = authorized, email=email)
 
 
 
-
-# @app.route('/bagels', methods = ['GET','POST'])
-# #protect this route with a required login
-# @auth.login_required
-# def showAllBagels():
-#     if request.method == 'GET':
-#         bagels = session.query(Bagel).all()
-#         return jsonify(bagels = [bagel.serialize for bagel in bagels])
-#     elif request.method == 'POST':
-#         name = request.json.get('name')
-#         description = request.json.get('description')
-#         picture = request.json.get('picture')
-#         price = request.json.get('price')
-#         newBagel = Bagel(name = name, description = description, picture = picture, price = price)
-#         session.add(newBagel)
-#         session.commit()
-#         return jsonify(newBagel.serialize)
 
 if __name__ == '__main__':
     app.debug = True

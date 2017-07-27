@@ -20,13 +20,16 @@ session = DBSession()
 
 
 # Menu for UrbanBurger
-newWord = Entry(word="dour", category = "adjective", definition = "relentlessly severe, stern, or gloomy in manner or appearance.")
+newWord = Entry(word="dour", category = "adjective", 
+	definition = "relentlessly severe, stern, or gloomy in manner or appearance.",
+	creatorEmail = 'dane.email@gmail.com')
 session.add(newWord)
 session.commit()
 
 newWord = Entry(word="ululate", category = "verb", 
 	definition = "howl or wail as an expression of strong emotion, typically grief.",
-	example = "the fair hounds ululate the arrival of their master's casket")
+	example = "the fair hounds ululate the arrival of their master's casket",
+	creatorEmail = 'dane.email@gmail.com')
 session.add(newWord)
 session.commit()
 
@@ -35,7 +38,8 @@ session.commit()
 
 newWord = Entry(word="pithily", category = "adverb", 
 	definition = "succinct, pointed, meaty, concise.",
-	example = "he pithily rejoiced before the urgent matters.")
+	example = "he pithily rejoiced before the urgent matters.",
+	creatorEmail = 'darn.email@gmail.com')
 session.add(newWord)
 session.commit()
 
