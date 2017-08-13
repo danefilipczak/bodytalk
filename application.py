@@ -229,22 +229,25 @@ def confirmDelete(itemID):
 @app.route('/add', methods = ['GET', 'POST'])
 def add():
     if request.method == 'POST':
-        print(request.form)
 
-        category = request.form['category']
-        word = request.form['word'].lower()
-        definition = request.form['definition'].lower()
-
-        newWord = Entry(word = word, definition = definition, category = category, creatorEmail = login_session['email'])
-        session.add(newWord)
-        session.commit()
-
-        items = session.query(Entry).all()
 
         if 'username' in login_session:
             authorized = True
         else:
             authorized = False
+
+        if authorized:
+            category = request.form['category']
+            word = request.form['word'].lower()
+            definition = request.form['definition'].lower()
+
+            newWord = Entry(word = word, definition = definition, category = category, creatorEmail = login_session['email'])
+            session.add(newWord)
+            session.commit()
+
+        items = session.query(Entry).all()
+
+        
 
         if 'email' in login_session:
             email = login_session['email']
@@ -269,27 +272,36 @@ def add():
 @app.route('/edit/<itemID>', methods = ['GET', 'POST'])
 def edit(itemID):
     if request.method == 'POST':
-        print(request.form['category'])
-
-        word = session.query(Entry).filter_by(id = itemID).one()
-
-        if request.form['word'] != "":
-            word.word = request.form['word'].lower()
         
-        word.category = request.form['category']
-        
-        if request.form['definition'] != "":
-            word.definition = request.form['definition'].lower()
 
-        session.add(word)
-        session.commit()
-
-        items = session.query(Entry).all()
 
         if 'username' in login_session:
             authorized = True
         else:
             authorized = False
+
+        word = session.query(Entry).filter_by(id = itemID).one()
+
+        if word.creatorEmail == login_session['email']:
+            if request.form['word'] != "":
+                word.word = request.form['word'].lower()
+            
+            word.category = request.form['category']
+            
+            if request.form['definition'] != "":
+                word.definition = request.form['definition'].lower()
+
+            session.add(word)
+            session.commit()
+
+        else: 
+            print('no match')
+            print(word.creatorEmail)
+            print(login_session['email'])
+
+        items = session.query(Entry).all()
+
+        
 
         return render_template('main.html', categories = categories, items = items, authorized = authorized)
         #return 'postinnn'
