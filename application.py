@@ -94,16 +94,6 @@ def gconnect():
             response.headers['Content-Type'] = 'application/json'
             return response
 
-        # stored_access_token = login_session.get('access_token')
-        # stored_gplus_id = login_session.get('gplus_id')
-
-        # if stored_access_token is not None and gplus_id == stored_gplus_id:
-        #     response = make_response(json.dumps('Current user is already connected.'),
-        #                              200)
-        #     response.headers['Content-Type'] = 'application/json'
-        #     print('there be the bug')
-        #     return response
-
         # Store the access token in the session for later use.
         login_session['access_token'] = credentials.access_token
         login_session['gplus_id'] = gplus_id
@@ -329,11 +319,16 @@ def fetchAll():
 @app.route('/d/<itemID>')
 def deleteItem(itemID):
 
-    try:
+    if 'username' in login_session:
+        authorized = True
+    else:
+        authorized = False
 
+    try:
         d = session.query(Entry).filter_by(id = itemID).one()
-        session.delete(d)
-        session.commit()
+        if d.creatorEmail == login_session['email']:
+            session.delete(d)
+            session.commit()
     except:
         items = session.query(Entry).all()
 
@@ -347,10 +342,7 @@ def deleteItem(itemID):
     
     items = session.query(Entry).all()
 
-    if 'username' in login_session:
-        authorized = True
-    else:
-        authorized = False
+    
 
     return render_template('main.html', categories = categories, items = items, flash = d.word + " has been deleted.", authorized = authorized)
 
