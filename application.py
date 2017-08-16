@@ -5,17 +5,21 @@ from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy import create_engine
 from flask.ext.httpauth import HTTPBasicAuth
 from flask import session as login_session
-import random, string
+import random
+import string
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
 import httplib2
 import json
 from flask import make_response
 import requests
+from functools import wraps
 
-auth = HTTPBasicAuth() 
 
-CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())['web']['client_id']
+auth = HTTPBasicAuth()
+
+CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())[
+    'web']['client_id']
 
 engine = create_engine('sqlite:///simpleenglish.db')
 
@@ -31,31 +35,44 @@ app.secret_key = "super secret key"
 '''
 categories = ['noun', 'verb', 'adverb', 'adjective', 'other']
 
+
 def getItems():
     items = session.query(Entry).all()
     return items
 
 
+def check_authorized():
+    if 'username' in login_session:
+        return True
+    else:
+        return False
+
 
 @app.route('/gconnect', methods=['POST', 'GET'])
 def gconnect():
+    '''
+    authenticates the user with Google+
+    '''
     items = getItems()
     if request.method == 'GET':
-        return render_template('main.html', email = login_session['email'], flash = 'welcome, '+login_session['name'], authorized = True, categories = categories, items = items)
+        return render_template('main.html', email=login_session['email'],
+                               flash='welcome, ' + login_session['name'],
+                               authorized=True,
+                               categories=categories, items=items)
     if request.method == 'POST':
         # Validate state token
         if request.args.get('state') != login_session['state']:
-            response = make_response(json.dumps('Invalid state parameter.'), 401)
+            response = make_response(json.dumps(
+                'Invalid state parameter.'), 401)
             response.headers['Content-Type'] = 'application/json'
             return response
         # Obtain authorization code
         code = request.data
 
-
-
         try:
             # Upgrade the authorization code into a credentials object
-            oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
+            oauth_flow = flow_from_clientsecrets(
+                'client_secrets.json', scope='')
             oauth_flow.redirect_uri = 'postmessage'
             credentials = oauth_flow.step2_exchange(code)
         except FlowExchangeError:
@@ -63,8 +80,6 @@ def gconnect():
                 json.dumps('Failed to upgrade the authorization code.'), 401)
             response.headers['Content-Type'] = 'application/json'
             return response
-
-        print('here1')
 
         # Check that the access token is valid.
         access_token = credentials.access_token
@@ -82,7 +97,7 @@ def gconnect():
         gplus_id = credentials.id_token['sub']
         if result['user_id'] != gplus_id:
             response = make_response(
-                json.dumps("Token's user ID doesn't match given user ID."), 401)
+                json.dumps("Token's user ID doesn't match user ID."), 401)
             response.headers['Content-Type'] = 'application/json'
             return response
 
@@ -105,8 +120,6 @@ def gconnect():
 
         data = answer.json()
 
-
-
         login_session['username'] = data['name']
         login_session['picture'] = data['picture']
         login_session['email'] = data['email']
@@ -114,9 +127,6 @@ def gconnect():
 
         print(data)
 
-     
-        print "done!"
-        
         return 'hellow mor'
 
 
@@ -125,13 +135,15 @@ def gdisconnect():
     access_token = login_session.get('access_token')
     if access_token is None:
         print 'Access Token is None'
-        response = make_response(json.dumps('Current user not connected.'), 401)
+        response = make_response(json.dumps(
+            'Current user not connected.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
     print 'In gdisconnect access token is %s', access_token
     print 'User name is: '
     print login_session['username']
-    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session['access_token']
+    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session[
+        'access_token']
     h = httplib2.Http()
     result = h.request(url, 'GET')[0]
     print 'result is '
@@ -146,28 +158,32 @@ def gdisconnect():
         del login_session['name']
         # response = make_response(json.dumps('Successfully disconnected.'), 200)
         # response.headers['Content-Type'] = 'application/json'
-        return render_template('main.html', authorized = False, items = getItems(), categories = categories)
+        return render_template('main.html', authorized=False,
+                               items=getItems(), categories=categories)
     else:
-        response = make_response(json.dumps('Failed to revoke token for given user.', 400))
+        response = make_response(json.dumps(
+            'Failed to revoke token for given user.', 400))
         response.headers['Content-Type'] = 'application/json'
         return response
 
 
-
 @app.route('/login')
 def showLogin():
-    state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in xrange(32))
+    state = ''.join(random.choice(string.ascii_uppercase + string.digits)
+                    for x in xrange(32))
     login_session['state'] = state
-    return render_template('login.html', STATE = login_session['state'], items = getItems(), categories = categories)
+    return render_template('login.html', STATE=login_session['state'],
+                           items=getItems(), categories=categories)
 
 
 @app.route('/')
 def homePage():
 
-    if 'username' in login_session:
-        authorized = True
-    else:
-        authorized = False
+    authorized = check_authorized()
+    # if 'username' in login_session:
+    #     authorized = True
+    # else:
+    #     authorized = False
 
     if 'email' in login_session:
         email = login_session['email']
@@ -175,135 +191,126 @@ def homePage():
         email = None
 
     items = session.query(Entry).all()
-    return render_template('main.html', categories = categories, items = items, authorized = authorized, email = email)
-
+    return render_template('main.html', categories=categories,
+                           items=items, authorized=authorized, email=email)
 
 
 @app.route('/item/<itemID>')
 def showItem(itemID):
-    item = session.query(Entry).filter_by(id = itemID).one()
+    item = session.query(Entry).filter_by(id=itemID).one()
 
     items = session.query(Entry).all()
 
-    if 'username' in login_session:
-        authorized = True
-    else:
-        authorized = False
+    authorized = check_authorized()
 
     if 'email' in login_session:
         if item.creatorEmail == login_session['email']:
             permitted = True
-        else: 
+        else:
             permitted = False
     else:
         permitted = False
 
-    #permitted
+    return render_template('item.html', item=item, category=item.category,
+                           categories=categories, authorized=authorized, permitted=permitted)
 
-    return render_template('item.html', item = item, category = item.category, categories = categories, authorized = authorized, permitted = permitted)
 
 @app.route('/delete/<itemID>')
 def confirmDelete(itemID):
 
-    item = session.query(Entry).filter_by(id = itemID).one()
+    item = session.query(Entry).filter_by(id=itemID).one()
 
     items = session.query(Entry).all()
 
-    if 'username' in login_session:
-        authorized = True
-    else:
-        authorized = False
+    authorized = check_authorized()
 
-    return render_template('deleteItem.html', item = item, categories = categories, authorized = authorized)
+    return render_template('deleteItem.html', item=item,
+                           categories=categories, authorized=authorized)
 
-@app.route('/add', methods = ['GET', 'POST'])
+
+@app.route('/add', methods=['GET', 'POST'])
 def add():
     if request.method == 'POST':
 
-
-        if 'username' in login_session:
-            authorized = True
-        else:
-            authorized = False
+        authorized = check_authorized()
 
         if authorized:
             category = request.form['category']
             word = request.form['word'].lower()
             definition = request.form['definition'].lower()
 
-            newWord = Entry(word = word, definition = definition, category = category, creatorEmail = login_session['email'])
+            newWord = Entry(word=word, definition=definition,
+                            category=category,
+                            creatorEmail=login_session['email'])
             session.add(newWord)
             session.commit()
 
         items = session.query(Entry).all()
 
-        
-
         if 'email' in login_session:
             email = login_session['email']
 
-        return render_template('main.html', categories = categories, items = items, authorized = authorized, email=email)
-        #return 'postinnn'
+        return render_template('main.html', categories=categories,
+                               items=items, authorized=authorized, email=email)
+        # return 'postinnn'
     if request.method == 'GET':
         items = session.query(Entry).all()
 
-        if 'username' in login_session:
-            authorized = True
-        else:
-            authorized = False
+        authorized = check_authorized()
 
         if 'email' in login_session:
             email = login_session['email']
 
-        return render_template('addItem.html', categories = categories, authorized = True, email=email)
+        return render_template('addItem.html',
+                               categories=categories, authorized=True, email=email)
 
 
-
-@app.route('/edit/<itemID>', methods = ['GET', 'POST'])
+@app.route('/edit/<itemID>', methods=['GET', 'POST'])
 def edit(itemID):
     if request.method == 'POST':
-        
 
+        authorized = check_authorized()
 
-        if 'username' in login_session:
-            authorized = True
-        else:
-            authorized = False
-
-        word = session.query(Entry).filter_by(id = itemID).one()
+        word = session.query(Entry).filter_by(id=itemID).one()
 
         if word.creatorEmail == login_session['email']:
             if request.form['word'] != "":
                 word.word = request.form['word'].lower()
-            
+
             word.category = request.form['category']
-            
+
             if request.form['definition'] != "":
                 word.definition = request.form['definition'].lower()
 
             session.add(word)
             session.commit()
 
-        else: 
+        else:
             print('no match')
             print(word.creatorEmail)
             print(login_session['email'])
 
         items = session.query(Entry).all()
 
-        
+        return render_template('main.html', categories=categories,
+                               items=items, authorized=authorized)
 
-        return render_template('main.html', categories = categories, items = items, authorized = authorized)
-        #return 'postinnn'
     if request.method == 'GET':
-        item = session.query(Entry).filter_by(id = itemID).one()
+        item = session.query(Entry).filter_by(id=itemID).one()
         items = session.query(Entry).all()
 
-        if 'username' in login_session:
-            authorized = True
-        else:
-            authorized = False
-        return render_template('editItem.html', item = item, categories = categories, authorized = authorized)
+        authorized = check_authorized()
+        return render_template('editItem.html', item=item,
+                               categories=categories, authorized=authorized)
+
+
+@app.route('/fetch/<word>')
+def fetchOne(word):
+    try:
+        word = session.query(Entry).filter_by(word=word).one()
+        return jsonify(word.serialize)
+    except:
+        return "that word couldn't be located in our database."
 
 
 @app.route('/fetch')
@@ -312,66 +319,50 @@ def fetchAll():
     dump = []
     for i in all:
         dump.append(i.serialize)
-    
+
     return jsonify(dump)
 
 
 @app.route('/d/<itemID>')
 def deleteItem(itemID):
 
-    if 'username' in login_session:
-        authorized = True
-    else:
-        authorized = False
+    authorized = check_authorized()
 
     try:
-        d = session.query(Entry).filter_by(id = itemID).one()
+        d = session.query(Entry).filter_by(id=itemID).one()
         if d.creatorEmail == login_session['email']:
             session.delete(d)
             session.commit()
     except:
         items = session.query(Entry).all()
 
-        if 'username' in login_session:
-            authorized = True
-        else:
-            authorized = False
+        authorized = check_authorized()
 
-        return render_template('main.html', categories = categories, items = items, authorized = authorized)
+        return render_template('main.html', categories=categories,
+                               items=items, authorized=authorized)
 
-    
     items = session.query(Entry).all()
 
-    
-
-    return render_template('main.html', categories = categories, items = items, flash = d.word + " has been deleted.", authorized = authorized)
+    return render_template('main.html', categories=categories,
+                           items=items, flash=d.word + " has been deleted.", authorized=authorized)
 
 
 @app.route('/category/<category>')
 def revealCategory(category):
 
-    if 'username' in login_session:
-        authorized = True
-    else:
-        authorized = False
+    authorized = check_authorized()
 
     items = session.query(Entry).all()
 
-
-
-    filteredItems = session.query(Entry).filter_by(category = category)
+    filteredItems = session.query(Entry).filter_by(category=category)
 
     if 'email' in login_session:
         email = login_session['email']
     else:
         email = None
 
-
-
-    return render_template('main.html', categories = categories, category = category, items = filteredItems, authorized = authorized, email=email)
-
-
-
+    return render_template('main.html', categories=categories,
+                           category=category, items=filteredItems, authorized=authorized, email=email)
 
 if __name__ == '__main__':
     app.debug = True
