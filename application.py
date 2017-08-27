@@ -35,6 +35,7 @@ app.secret_key = "super secret key"
 '''
 categories = ['noun', 'verb', 'adverb', 'adjective', 'other']
 
+# helper functions
 
 def getItems():
     items = session.query(Entry).all()
@@ -132,6 +133,9 @@ def gconnect():
 
 @app.route('/gdisconnect')
 def gdisconnect():
+    ''' 
+    logout 
+    '''
     access_token = login_session.get('access_token')
     if access_token is None:
         print 'Access Token is None'
@@ -142,8 +146,8 @@ def gdisconnect():
     print 'In gdisconnect access token is %s', access_token
     print 'User name is: '
     print login_session['username']
-    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session[
-        'access_token']
+    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s'
+        % login_session['access_token']
     h = httplib2.Http()
     result = h.request(url, 'GET')[0]
     print 'result is '
@@ -156,8 +160,6 @@ def gdisconnect():
         del login_session['email']
         del login_session['picture']
         del login_session['name']
-        # response = make_response(json.dumps('Successfully disconnected.'), 200)
-        # response.headers['Content-Type'] = 'application/json'
         return render_template('main.html', authorized=False,
                                items=getItems(), categories=categories)
     else:
@@ -169,6 +171,9 @@ def gdisconnect():
 
 @app.route('/login')
 def showLogin():
+    '''
+    show a login button
+    '''
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
                     for x in xrange(32))
     login_session['state'] = state
@@ -180,11 +185,7 @@ def showLogin():
 def homePage():
 
     authorized = check_authorized()
-    # if 'username' in login_session:
-    #     authorized = True
-    # else:
-    #     authorized = False
-
+   
     if 'email' in login_session:
         email = login_session['email']
     else:
@@ -197,6 +198,9 @@ def homePage():
 
 @app.route('/item/<itemID>')
 def showItem(itemID):
+    ''' 
+    return a page describing an item given its id
+    '''
     item = session.query(Entry).filter_by(id=itemID).one()
 
     items = session.query(Entry).all()
@@ -212,12 +216,13 @@ def showItem(itemID):
         permitted = False
 
     return render_template('item.html', item=item, category=item.category,
-                           categories=categories, authorized=authorized, permitted=permitted)
+                           categories=categories,
+                           authorized=authorized,
+                           permitted=permitted)
 
 
 @app.route('/delete/<itemID>')
 def confirmDelete(itemID):
-
     item = session.query(Entry).filter_by(id=itemID).one()
 
     items = session.query(Entry).all()
@@ -230,6 +235,10 @@ def confirmDelete(itemID):
 
 @app.route('/add', methods=['GET', 'POST'])
 def add():
+    '''
+    check if a user is logged in;
+    if logged in, show the add item page
+    '''
     if request.method == 'POST':
 
         authorized = check_authorized()
@@ -252,7 +261,6 @@ def add():
 
         return render_template('main.html', categories=categories,
                                items=items, authorized=authorized, email=email)
-        # return 'postinnn'
     if request.method == 'GET':
         items = session.query(Entry).all()
 
@@ -262,7 +270,8 @@ def add():
             email = login_session['email']
 
         return render_template('addItem.html',
-                               categories=categories, authorized=True, email=email)
+                               categories=categories,
+                               authorized=True, email=email)
 
 
 @app.route('/edit/<itemID>', methods=['GET', 'POST'])
@@ -306,6 +315,9 @@ def edit(itemID):
 
 @app.route('/fetch/<word>')
 def fetchOne(word):
+    '''
+    json endpoint for a given word
+    '''
     try:
         word = session.query(Entry).filter_by(word=word).one()
         return jsonify(word.serialize)
@@ -315,6 +327,9 @@ def fetchOne(word):
 
 @app.route('/fetch')
 def fetchAll():
+    '''
+    json endpoint for the entire database
+    '''
     all = session.query(Entry).all()
     dump = []
     for i in all:
@@ -344,7 +359,8 @@ def deleteItem(itemID):
     items = session.query(Entry).all()
 
     return render_template('main.html', categories=categories,
-                           items=items, flash=d.word + " has been deleted.", authorized=authorized)
+                           items=items, flash=d.word
+                           + " has been deleted.", authorized=authorized)
 
 
 @app.route('/category/<category>')
@@ -362,7 +378,8 @@ def revealCategory(category):
         email = None
 
     return render_template('main.html', categories=categories,
-                           category=category, items=filteredItems, authorized=authorized, email=email)
+                           category=category, items=filteredItems,
+                           authorized=authorized, email=email)
 
 if __name__ == '__main__':
     app.debug = True
