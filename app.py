@@ -1,3 +1,24 @@
+# using python 3
+
+'''
+TO DO:
+
+-- add timestamps
+
+
+-Make sure everything is mobile responsive, relatively
+
+implement personal homepage that has nice listing by time - 
+today, 
+yesterday, 
+in the past,
+
+
+
+
+'''
+
+from datetime import date
 from models import Base, User, Entry
 from flask import Flask, jsonify, request, url_for, abort, g, render_template
 from sqlalchemy.ext.declarative import declarative_base
@@ -21,7 +42,7 @@ auth = HTTPBasicAuth()
 CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())[
     'web']['client_id']
 
-engine = create_engine('sqlite:///simpleenglish.db')
+engine = create_engine('sqlite:///bodytalkdev.db')
 
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
@@ -33,7 +54,7 @@ app.secret_key = "super secret key"
 
 
 '''
-categories = ['noun', 'verb', 'adverb', 'adjective', 'other']
+categories = ['visions', 'sounds', 'odors', 'touches', 'tastes']
 
 # helper functions
 
@@ -106,7 +127,7 @@ def gconnect():
         if result['issued_to'] != CLIENT_ID:
             response = make_response(
                 json.dumps("Token's client ID does not match app's."), 401)
-            print "Token's client ID does not match app's."
+            print("Token's client ID does not match app's.")
             response.headers['Content-Type'] = 'application/json'
             return response
 
@@ -138,20 +159,19 @@ def gdisconnect():
     '''
     access_token = login_session.get('access_token')
     if access_token is None:
-        print 'Access Token is None'
+        print('Access Token is None')
         response = make_response(json.dumps(
             'Current user not connected.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
-    print 'In gdisconnect access token is %s', access_token
-    print 'User name is: '
-    print login_session['username']
-    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s'
-        % login_session['access_token']
+    print('In gdisconnect access token is %s', access_token)
+    print('User name is: ')
+    print(login_session['username'])
+    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session['access_token']
     h = httplib2.Http()
     result = h.request(url, 'GET')[0]
-    print 'result is '
-    print result
+    print('result is ')
+    print(result)
     if result['status'] == '200' or '400':
         name = login_session['name']
         del login_session['access_token']
@@ -174,8 +194,7 @@ def showLogin():
     '''
     show a login button
     '''
-    state = ''.join(random.choice(string.ascii_uppercase + string.digits)
-                    for x in xrange(32))
+    state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(0, 32))
     login_session['state'] = state
     return render_template('login.html', STATE=login_session['state'],
                            items=getItems(), categories=categories)
@@ -245,11 +264,12 @@ def add():
 
         if authorized:
             category = request.form['category']
-            word = request.form['word'].lower()
-            definition = request.form['definition'].lower()
+            # word = request.form['word'].lower()
+            entry = request.form['entry'].lower()
 
-            newWord = Entry(word=word, definition=definition,
+            newWord = Entry(entry = entry,
                             category=category,
+                            time = date.today(),
                             creatorEmail=login_session['email'])
             session.add(newWord)
             session.commit()
@@ -361,6 +381,12 @@ def deleteItem(itemID):
     return render_template('main.html', categories=categories,
                            items=items, flash=d.word
                            + " has been deleted.", authorized=authorized)
+
+
+@app.route('/user/<user>')
+def userPage(user):
+    # return render_template('user.html', user)
+    return user + '@gmail.com'
 
 
 @app.route('/category/<category>')

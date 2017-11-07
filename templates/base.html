@@ -14,7 +14,7 @@
 
 <header class = "header">
 <a href = "/">
-<span>simple english</span>
+<span class = "title">body talk</span>
 </a>
 </header>
 
@@ -39,19 +39,62 @@
 {% endif %}
 <br>
 
-{% for c in categories %}
+
 	
-	<a href ="/category/{{c}}">
-	<span class = "category" {% if category == c %} id = "highlight"{% endif %}>
+	<a href ="/category/seeing">
+	   <span class = "category" {% if category == 'seeing' %} id = "highlight"{% endif %}>
 	
-	{{c}}s
+	       visions
 	
-	</span>
+	   </span>
 	</a>
 <br>
 <br>
 
-{% endfor %}
+
+    <a href ="/category/hearing">
+       <span class = "category" {% if category == 'hearing' %} id = "highlight"{% endif %}>
+    
+            sounds
+    
+       </span>
+    </a>
+<br>
+<br>
+
+    <a href ="/category/smelling">
+       <span class = "category" {% if category == 'smelling' %} id = "highlight"{% endif %}>
+    
+            odors
+    
+       </span>
+    </a>
+<br>
+<br>
+
+    <a href ="/category/touching">
+       <span class = "category" {% if category == 'touching' %} id = "highlight"{% endif %}>
+    
+            touches
+    
+       </span>
+    </a>
+<br>
+<br>
+
+    <a href ="/category/tasting">
+       <span class = "category" {% if category == 'tasting' %} id = "highlight"{% endif %}>
+    
+            tastes
+    
+       </span>
+    </a>
+<br>
+<br>
+
+{% if email %}
+<a href = "/user/{{ email[:-10]  }}">link to user</a>
+{% endif %}
 
 
 

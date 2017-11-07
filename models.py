@@ -1,4 +1,4 @@
-from sqlalchemy import Column,ForeignKey,Integer,String
+from sqlalchemy import Column,ForeignKey,Integer,String, Date
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy import create_engine
@@ -7,6 +7,7 @@ Base = declarative_base()
 
 
 class User(Base):
+	# not used
     __tablename__ = 'user'
     ID = Column(Integer, primary_key=True)
     username = Column(String(32), index=True)
@@ -24,11 +25,13 @@ class User(Base):
 class Entry(Base):
 	__tablename__ = 'entry'
 	id = Column(Integer, primary_key=True)
-	word = Column(String, nullable = False)
+	# word = Column(String, nullable = False)
 	category = Column(String)
+	entry = Column(String)
+	time = Column(Date)
 	#picture = Column(String)
-	definition = Column(String)
-	example = Column(String)
+	# definition = Column(String)
+	# example = Column(String)
 	creatorEmail = Column(String)
 	#user = relationship(User)
 	#price = Column(String)
@@ -53,7 +56,7 @@ class Entry(Base):
 	'''
 
 
-engine = create_engine('sqlite:///simpleenglish.db')
+engine = create_engine('sqlite:///bodytalkdev.db')
  
 
 Base.metadata.create_all(engine)

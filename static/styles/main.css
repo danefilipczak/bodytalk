@@ -1,5 +1,5 @@
 body {
-	background-color:lightgreen;
+	background-color:#6495ED;
 	font-family:Helvetica;
 	box-sizing:border-box;
 	border:0px;
@@ -14,7 +14,7 @@ body a:visited, a:link {
 
 .header{
 	height:100px;
-	background-color:lightgreen;
+	/*background-color:lightgreen;*/
 	position:relative;
 	padding:20px;
 	font-size:100px;
@@ -34,13 +34,26 @@ body a:visited, a:link {
     color:white;
 }
 
+.category:hover{
+	padding-right:20px;
+}
+
+#highlight:hover{
+	padding-right:0;
+}
+
 .category{
 	padding:0px;
 	background-color:white;
 	padding-left:20%;
+	padding-right:0;
 	font-size:30px;
-
+	transition: padding-right 2s;
 	
+}
+
+.title{
+	padding-right:50px;
 }
 
 .flash{
@@ -50,7 +63,7 @@ body a:visited, a:link {
 	color:white;
 	margin-right:0px;
 	background-color:black;
-	overflow:scroll;
+	/*overflow:scroll;*/
 
 }
 
@@ -59,7 +72,8 @@ body a:visited, a:link {
 }
 
 #highlight {
-	background-color:lightgreen;
+	/*transition: background-color 1s;*/
+	background-color:#6495ED;
 	color:white;
 }
 
@@ -108,11 +122,12 @@ body a:visited, a:link {
 }
 
 .categories {
+
 	position:fixed;
 	left:0px;
 	width:37%;
 	/*height:50%;*/
-	overflow:scroll;
+	/*overflow:scroll;*/
 	background-color:rgba(208, 190, 190, 0.74);
 }
 
