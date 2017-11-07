@@ -1,4 +1,4 @@
-from sqlalchemy import Column,ForeignKey,Integer,String, Date
+from sqlalchemy import Column,ForeignKey,Integer,String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy import create_engine
@@ -28,7 +28,7 @@ class Entry(Base):
 	# word = Column(String, nullable = False)
 	category = Column(String)
 	entry = Column(String)
-	time = Column(Date)
+	time = Column(DateTime)
 	#picture = Column(String)
 	# definition = Column(String)
 	# example = Column(String)
@@ -56,7 +56,7 @@ class Entry(Base):
 	'''
 
 
-engine = create_engine('sqlite:///bodytalkdev.db')
+engine = create_engine('sqlite:///bodytalkdev1.db')
  
 
 Base.metadata.create_all(engine)

@@ -42,7 +42,7 @@ auth = HTTPBasicAuth()
 CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())[
     'web']['client_id']
 
-engine = create_engine('sqlite:///bodytalkdev.db')
+engine = create_engine('sqlite:///bodytalkdev1.db')
 
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
@@ -211,6 +211,9 @@ def homePage():
         email = None
 
     items = session.query(Entry).all()
+    for i in items:
+        if i.category=="touching":
+            i.category="feeling the touch of"
     return render_template('main.html', categories=categories,
                            items=items, authorized=authorized, email=email)
 
@@ -379,7 +382,7 @@ def deleteItem(itemID):
     items = session.query(Entry).all()
 
     return render_template('main.html', categories=categories,
-                           items=items, flash=d.word
+                           items=items, flash=d.entry
                            + " has been deleted.", authorized=authorized)
 
 

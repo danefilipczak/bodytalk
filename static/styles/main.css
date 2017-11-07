@@ -144,6 +144,10 @@ body a:visited, a:link {
 	background-color:rgba(255, 167, 0, 0.81);
 }
 
+.actionWord{
+	color:grey;
+}
+
 .categoriesOpaque span {
 	background-color:black;
 }
@@ -157,7 +161,8 @@ body a:visited, a:link {
 	color:white;
 	display:block;
 	text-align:center;
-	width:200%;
+	/*width:200%;*/
+	margin-left:61.8%;
 }
 
 
