@@ -33,6 +33,12 @@ body a:visited, a:link {
     text-decoration: none;
     color:white;
 }
+.date{
+	font-size:20px;
+	color:white;
+	/*background-color:red;*/
+	width:100%;
+}
 
 .category:hover{
 	padding-right:20px;
@@ -45,6 +51,17 @@ body a:visited, a:link {
 .category{
 	padding:0px;
 	background-color:white;
+	padding-left:20%;
+	padding-right:0;
+	font-size:30px;
+	transition: padding-right 2s;
+	
+}
+
+.me{
+	color:white;
+	padding:0px;
+	/*background-color:white;*/
 	padding-left:20%;
 	padding-right:0;
 	font-size:30px;

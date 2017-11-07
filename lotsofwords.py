@@ -1,10 +1,10 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from models import User, Base, Entry
 
-engine = create_engine('sqlite:///bodytalkdev1.db')
+engine = create_engine('sqlite:///bodytalkdev2.db')
 # Bind the engine to the metadata of the Base class so that the
 # declaratives can be accessed through a DBSession instance
 Base.metadata.bind = engine
@@ -28,7 +28,7 @@ session = DBSession()
 newWord = Entry(category = "seeing", 
 	entry = "my shirt on my back",
 	creatorEmail = 'dane.email@gmail.com',
-	time = datetime.now()
+	time = datetime.now() - timedelta(30)
 	)
 session.add(newWord)
 session.commit()
@@ -36,17 +36,17 @@ session.commit()
 newWord = Entry(category = "hearing", 
 	entry = "my shirt on my back",
 	creatorEmail = 'dane.email@gmail.com',
-	time = datetime.now()
+	time = datetime.now() - timedelta(3)
 	)
 session.add(newWord)
 session.commit()
 
 
 
-newWord = Entry(category = "touching", 
+newWord = Entry(category = "feeling", 
 	entry = "my shirt on my back",
-	creatorEmail = 'dane.email@gmail.com',
-	time = datetime.now()
+	creatorEmail = 'animposter@gmail.com',
+	time = datetime.now() - timedelta(1)
 	)
 session.add(newWord)
 session.commit()

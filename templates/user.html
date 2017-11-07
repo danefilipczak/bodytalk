@@ -1,0 +1,203 @@
+
+{% extends "base.html" %}
+{% block main %}
+
+{% if not authorized %}
+
+	<div class = "spacer">
+	<a href = "/login">
+	<article class = "item">
+	
+	<b>login with Google+</b><br>
+	to contribute
+
+	</article>
+	</a>
+	</div>
+
+{% endif %}
+
+{% if authorized and add %}
+
+	<div class = "spacer">
+	<a href = "/add">
+	<article class = "item">
+	
+	<span class = "plus">+</span>
+ 	
+	</article>
+	</a>
+	</div>
+
+{% endif %}
+
+
+{% if today[0] %}
+	<div class = "date">today</div>
+	{% for i in today %}
+		<div class = "spacer">
+		<a href = "/item/{{i.id}}">
+		<article class = "item">
+		<span class = "iAm">I was</span>
+		<span class = "actionWord">{% if i.category!='touching' %}{{ i.category }}{%else%}feeling the touch of{%endif%}</span> 
+
+		{{i.entry}}
+	 	
+		</article>
+		</a>
+		</div>
+	{% endfor %}
+{%endif%}
+
+
+{% if yesterday[0] %}
+	<div class = "date">yesterday</div>
+	{% for i in yesterday %}
+		<div class = "spacer">
+		<a href = "/item/{{i.id}}">
+		<article class = "item">
+		<span class = "iAm">I was</span>
+		<span class = "actionWord">{% if i.category!='touching' %}{{ i.category }}{%else%}feeling the touch of{%endif%}</span> 
+
+		{{i.entry}}
+	 	
+		</article>
+		</a>
+		</div>
+	{% endfor %}
+{%endif%}
+
+{% if sevendays[0] %}
+	<div class = "date">< 7 days</div>
+	{% for i in sevendays %}
+		<div class = "spacer">
+		<a href = "/item/{{i.id}}">
+		<article class = "item">
+		<span class = "iAm">I was</span>
+		<span class = "actionWord">{% if i.category!='touching' %}{{ i.category }}{%else%}feeling the touch of{%endif%}</span> 
+
+		{{i.entry}}
+	 	
+		</article>
+		</a>
+		</div>
+	{% endfor %}
+{%endif%}
+
+{% if thirtydays[0] %}
+	<div class = "date">< 30 days</div>
+	{% for i in thirtydays %}
+		<div class = "spacer">
+		<a href = "/item/{{i.id}}">
+		<article class = "item">
+		<span class = "iAm">I was</span>
+		<span class = "actionWord">{% if i.category!='touching' %}{{ i.category }}{%else%}feeling the touch of{%endif%}</span> 
+
+		{{i.entry}}
+	 	
+		</article>
+		</a>
+		</div>
+	{% endfor %}
+{%endif%}
+
+{% if ninetydays[0] %}
+	<div class = "date">< 90 days</div>
+	{% for i in ninetydays %}
+		<div class = "spacer">
+		<a href = "/item/{{i.id}}">
+		<article class = "item">
+		<span class = "iAm">I was</span>
+		<span class = "actionWord">{% if i.category!='touching' %}{{ i.category }}{%else%}feeling the touch of{%endif%}</span> 
+
+		{{i.entry}}
+	 	
+		</article>
+		</a>
+		</div>
+	{% endfor %}
+{%endif%}
+
+{% if oneyear[0] %}
+	<div class = "date">< 1 year</div>
+	{% for i in oneyear %}
+		<div class = "spacer">
+		<a href = "/item/{{i.id}}">
+		<article class = "item">
+		<span class = "iAm">I was</span>
+		<span class = "actionWord">{% if i.category!='touching' %}{{ i.category }}{%else%}feeling the touch of{%endif%}</span> 
+
+		{{i.entry}}
+	 	
+		</article>
+		</a>
+		</div>
+	{% endfor %}
+{%endif%}
+
+{% if twoyears[0] %}
+	<div class = "date">< 2 years</div>
+	{% for i in twoyears %}
+		<div class = "spacer">
+		<a href = "/item/{{i.id}}">
+		<article class = "item">
+		<span class = "iAm">I was</span>
+		<span class = "actionWord">{% if i.category!='touching' %}{{ i.category }}{%else%}feeling the touch of{%endif%}</span> 
+
+		{{i.entry}}
+	 	
+		</article>
+		</a>
+		</div>
+	{% endfor %}
+{%endif%}
+
+{% if threeyears[0] %}
+	<div class = "date">< 3 years</div>
+	{% for i in threeyears %}
+		<div class = "spacer">
+		<a href = "/item/{{i.id}}">
+		<article class = "item">
+		<span class = "iAm">I was</span>
+		<span class = "actionWord">{% if i.category!='touching' %}{{ i.category }}{%else%}feeling the touch of{%endif%}</span> 
+
+		{{i.entry}}
+	 	
+		</article>
+		</a>
+		</div>
+	{% endfor %}
+
+{%endif%}{% if fouryears[0] %}
+	<div class = "date">< 4 years</div>
+	{% for i in fouryears %}
+		<div class = "spacer">
+		<a href = "/item/{{i.id}}">
+		<article class = "item">
+		<span class = "iAm">I was</span>
+		<span class = "actionWord">{% if i.category!='touching' %}{{ i.category }}{%else%}feeling the touch of{%endif%}</span> 
+
+		{{i.entry}}
+	 	
+		</article>
+		</a>
+		</div>
+	{% endfor %}
+{%endif%}{% if fiveyears[0] %}
+	<div class = "date">< 5 years</div>
+	{% for i in fiveyears %}
+		<div class = "spacer">
+		<a href = "/item/{{i.id}}">
+		<article class = "item">
+		<span class = "iAm">I was</span>
+		<span class = "actionWord">{% if i.category!='touching' %}{{ i.category }}{%else%}feeling the touch of{%endif%}</span> 
+
+		{{i.entry}}
+	 	
+		</article>
+		</a>
+		</div>
+	{% endfor %}
+{%endif%}
+
+{% endblock %}

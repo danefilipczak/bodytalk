@@ -56,7 +56,7 @@ class Entry(Base):
 	'''
 
 
-engine = create_engine('sqlite:///bodytalkdev1.db')
+engine = create_engine('sqlite:///bodytalkdev2.db')
  
 
 Base.metadata.create_all(engine)

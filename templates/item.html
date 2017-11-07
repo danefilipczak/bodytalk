@@ -6,11 +6,13 @@
 	<div class = "spacer">
 		<article class = "item">
 
-		<h1>
-		{{item.word}}
-		</h1>
+		
+		I was {% if item.category!='touching' %}{{ item.category }}{%else%}feeling the touch of{%endif%}
+		{{item.entry}}
+		<br><br>
 
-		{{item.definition}}
+		{{item.time.hour}}:{%if item.time.minute<10%}0{%endif%}{{item.time.minute}}<br>
+		{{ item.time.year }}-{{ item.time.month }}-{{item.time.day}} 
 
 
 		{% if permitted %}

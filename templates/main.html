@@ -17,7 +17,7 @@
 
 {% endif %}
 
-{% if authorized %}
+{% if authorized and add %}
 
 	<div class = "spacer">
 	<a href = "/add">
@@ -38,7 +38,7 @@
 	<a href = "/item/{{i.id}}">
 	<article class = "item">
 	<span class = "iAm">I am</span>
-	<span class = "actionWord">{{ i.category }}</span> 
+	<span class = "actionWord">{% if i.category!='touching' %}{{ i.category }}{%else%}feeling the touch of{%endif%}</span> 
 
 	{{i.entry}}
 	<br>

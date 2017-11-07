@@ -72,10 +72,10 @@
 <br>
 <br>
 
-    <a href ="/category/touching">
-       <span class = "category" {% if category == 'touching' %} id = "highlight"{% endif %}>
+    <a href ="/category/feeling">
+       <span class = "category" {% if category == 'feeling' %} id = "highlight"{% endif %}>
     
-            touches
+            feelings
     
        </span>
     </a>
@@ -93,7 +93,13 @@
 <br>
 
 {% if email %}
-<a href = "/user/{{ email[:-10]  }}">link to user</a>
+<a href = "/user/{{ email[:-10]  }}">
+<span class = "me" {% if category == 'user' %} id = "highlight"{% endif %}>
+    me
+</span>
+</a>
+<br>
+<br>
 {% endif %}
 
 

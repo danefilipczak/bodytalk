@@ -3,27 +3,29 @@
 '''
 TO DO:
 
--- add timestamps
+-- make user template 
+
+-- update add/edit screens
+
+-- dedicated category screens
 
 
 -Make sure everything is mobile responsive, relatively
 
-implement personal homepage that has nice listing by time - 
-today, 
-yesterday, 
-in the past,
+
 
 
 
 
 '''
 
-from datetime import date
+from datetime import datetime
 from models import Base, User, Entry
-from flask import Flask, jsonify, request, url_for, abort, g, render_template
+from flask import Flask, jsonify, request, url_for, abort, g, render_template, redirect
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy import create_engine
+from sqlalchemy import desc
 from flask.ext.httpauth import HTTPBasicAuth
 from flask import session as login_session
 import random
@@ -36,13 +38,14 @@ from flask import make_response
 import requests
 from functools import wraps
 
+maxItems = 50 #max number of items on any one page
 
 auth = HTTPBasicAuth()
 
 CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())[
     'web']['client_id']
 
-engine = create_engine('sqlite:///bodytalkdev1.db')
+engine = create_engine('sqlite:///bodytalkdev2.db')
 
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
@@ -54,7 +57,7 @@ app.secret_key = "super secret key"
 
 
 '''
-categories = ['visions', 'sounds', 'odors', 'touches', 'tastes']
+categories = ['visions', 'sounds', 'odors', 'feelings', 'tastes']
 
 # helper functions
 
@@ -210,12 +213,13 @@ def homePage():
     else:
         email = None
 
-    items = session.query(Entry).all()
-    for i in items:
-        if i.category=="touching":
-            i.category="feeling the touch of"
+    # items = session.query(Entry).all()
+    items = session.query(Entry).order_by(desc(Entry.time)).limit(maxItems).all()
+    # for i in items:
+    #     if i.category=="touching":
+    #         i.category="feeling the touch of"
     return render_template('main.html', categories=categories,
-                           items=items, authorized=authorized, email=email)
+                           items=items, authorized=authorized, email=email, add=True)
 
 
 @app.route('/item/<itemID>')
@@ -272,7 +276,7 @@ def add():
 
             newWord = Entry(entry = entry,
                             category=category,
-                            time = date.today(),
+                            time = datetime.now(),
                             creatorEmail=login_session['email'])
             session.add(newWord)
             session.commit()
@@ -282,10 +286,9 @@ def add():
         if 'email' in login_session:
             email = login_session['email']
 
-        return render_template('main.html', categories=categories,
-                               items=items, authorized=authorized, email=email)
+        return redirect('/')
     if request.method == 'GET':
-        items = session.query(Entry).all()
+        # items = session.query(Entry).all()
 
         authorized = check_authorized()
 
@@ -381,15 +384,66 @@ def deleteItem(itemID):
 
     items = session.query(Entry).all()
 
-    return render_template('main.html', categories=categories,
-                           items=items, flash=d.entry
-                           + " has been deleted.", authorized=authorized)
+    return redirect('/')
 
 
 @app.route('/user/<user>')
 def userPage(user):
+    if login_session['email'] != user + "@gmail.com":
+        return redirect("/", code=302)
+    
+    authorized = check_authorized()
     # return render_template('user.html', user)
-    return user + '@gmail.com'
+    items = session.query(Entry).filter_by(creatorEmail=login_session['email']).order_by(desc(Entry.time)).all()
+
+    today = []
+    yesterday = []
+    sevendays = []
+    thirtydays = []
+    ninetydays = []
+    oneyear = []
+    twoyears = []
+    threeyears = []
+    fouryears = []
+    fiveyears = []
+
+    now = datetime.now()
+    for item in items:
+        delta = now - item.time
+        if delta.days<1:
+            today.append(item)
+        elif delta.days<2:
+            yesterday.append(item)
+        elif delta.days<7:
+            sevendays.append(item)
+        elif delta.days<30:
+            thirtydays.append(item)
+        elif delta.days<90:
+            ninetydays.append(item)
+        elif delta.days<365:
+            oneyear.append(item)
+        elif delta.days<365*2:
+            twoyears.append(item)
+        elif delta.days<365*3:
+            threeyears.append(item)
+        elif delta.days<365*4:
+            fouryears.append(item)
+        elif delta.days<365*5:
+            fiveyears.append(item)
+
+
+    return render_template('user.html', categories=categories, category="user",
+                           items=items, authorized=authorized, email=login_session['email'],
+                           today = today,
+                           yesterday = yesterday,
+                           sevendays = sevendays,
+                           thirtydays = thirtydays,
+                           ninetydays = ninetydays,
+                           oneyear = oneyear,
+                           twoyears = twoyears,
+                           threeyears = threeyears,
+                           fouryears = fouryears,
+                           fiveyears = fiveyears)
 
 
 @app.route('/category/<category>')
