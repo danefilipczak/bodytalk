@@ -31,18 +31,18 @@
 
 {% endif %}
 
-
+<div class = "date">I was {{category}}...</div>
 
 {% for i in items %}
 	<div class = "spacer">
 	<a href = "/item/{{i.id}}">
 	<article class = "item">
-	<span class = "iAm">I am</span>
-	<span class = "actionWord">{% if i.category!='touching' %}{{ i.category }}{%else%}feeling the touch of{%endif%}</span> 
+	<!-- <span class = "iAm">I am</span> -->
+	<!-- <span class = "actionWord">{% if i.category!='touching' %}{{ i.category }}{%else%}feeling the touch of{%endif%}</span>  -->
 
 	{{i.entry}}
-	<!-- <br>
-	{{ i.time }} -->
+	<!-- <br> -->
+	<!-- {{ i.time }} -->
 
 	<!-- {{i.description}}
  -->

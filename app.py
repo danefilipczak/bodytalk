@@ -3,14 +3,14 @@
 '''
 TO DO:
 
--- make user template 
 
 -- update add/edit screens
 
 -- dedicated category screens
 
+-- better UX on login
 
--Make sure everything is mobile responsive, relatively
+-- Make sure everything is mobile responsive, relatively. should work well on a mobile phone
 
 
 
@@ -244,7 +244,7 @@ def showItem(itemID):
     return render_template('item.html', item=item, category=item.category,
                            categories=categories,
                            authorized=authorized,
-                           permitted=permitted)
+                           permitted=permitted, email = login_session['email'])
 
 
 @app.route('/delete/<itemID>')
@@ -460,7 +460,7 @@ def revealCategory(category):
     else:
         email = None
 
-    return render_template('main.html', categories=categories,
+    return render_template('category.html', categories=categories,
                            category=category, items=filteredItems,
                            authorized=authorized, email=email)
 

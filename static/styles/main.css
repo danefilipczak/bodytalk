@@ -5,6 +5,8 @@ body {
 	border:0px;
 	margin:0px;
 	padding:0px;
+	/*overflow:scroll;*/
+	/*overflow:hidden;*/
 }
 
 body a:visited, a:link {
@@ -154,7 +156,7 @@ body a:visited, a:link {
 	left:0px;
 	width:37%;
 	height:50%;
-	overflow:scroll;
+	/*overflow:scroll;*/
 	color:white;
 
 
@@ -176,10 +178,16 @@ body a:visited, a:link {
 .yours{
 	background-color:black;
 	color:white;
+	position:absolute;
+	right:5px;
+	bottom:5px;
 	display:block;
 	text-align:center;
+	padding-left:10px;
+	padding-right:10px;
+	max-width:70px;
 	/*width:200%;*/
-	margin-left:61.8%;
+	/*margin-left:61.8%;*/
 }
 
 
@@ -202,6 +210,7 @@ body a:visited, a:link {
 }
 
 .item {
+	position:relative;
 	background-color:white;
 	overflow-wrap: break-word;
 	/*background-color:red;*/
@@ -218,6 +227,11 @@ body a:visited, a:link {
 
 .itemContainer{
 	position:fixed;
+	/*max-height:100%;*/
+	max-height: -moz-calc(100% - 100px);
+	max-height: -webkit-calc(100% - 100px);
+	max-height: -o-calc(100% - 100px);
+	max-height: calc(100% - 100px);
 	left:40%;
 	display:flex;
 	display: -webkit-flex; /* Safari */
@@ -228,6 +242,6 @@ body a:visited, a:link {
     justify-content: space-around;
    /* padding-left:100px;*/
 
-/*   	overflow:auto;*/
-	margin-right:20px;
+   	overflow-y:auto;
+	margin-right:0px;
 }
