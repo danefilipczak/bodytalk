@@ -236,15 +236,18 @@ def showItem(itemID):
     if 'email' in login_session:
         if item.creatorEmail == login_session['email']:
             permitted = True
+            email = login_session['email']
         else:
             permitted = False
+            email = None
     else:
         permitted = False
+        email = None
 
     return render_template('item.html', item=item, category=item.category,
                            categories=categories,
                            authorized=authorized,
-                           permitted=permitted, email = login_session['email'])
+                           permitted=permitted, email = email)
 
 
 @app.route('/delete/<itemID>')

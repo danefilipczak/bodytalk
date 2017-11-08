@@ -106,7 +106,8 @@ body a:visited, a:link {
 }
 
 .input {
-	width:100%;
+	text-align:center;
+	/*width:100%;*/
 	height:50px;
 	font-size:16px;
 	font-family:Helvetica;
@@ -219,6 +220,19 @@ body a:visited, a:link {
 	/*margin:50px;*/
 	padding:15px;
 	max-width:250px;
+}
+
+
+.form {
+	position:relative;
+	background-color:white;
+	/*overflow-wrap: break-word;*/
+	/*background-color:red;*/
+/*	margin-bottom:50px;
+	margin-left:20px;*/
+	/*margin:50px;*/
+	padding:15px;
+	/*max-width:250px;*/
 }
 
 .spacer{

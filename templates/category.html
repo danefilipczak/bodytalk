@@ -2,7 +2,9 @@
 {% extends "base.html" %}
 {% block main %}
 
-{% if not authorized %}
+<div class = "date">I was {{category}}...</div>
+
+<!-- {% if not authorized %}
 
 	<div class = "spacer">
 	<a href = "/login">
@@ -15,7 +17,7 @@
 	</a>
 	</div>
 
-{% endif %}
+{% endif %} -->
 
 {% if authorized and add %}
 
@@ -31,7 +33,7 @@
 
 {% endif %}
 
-<div class = "date">I was {{category}}...</div>
+
 
 {% for i in items %}
 	<div class = "spacer">

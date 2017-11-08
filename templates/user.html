@@ -33,7 +33,7 @@
 
 
 {% if today[0] %}
-	<div class = "date">today</div>
+	<div class = "date">< 1 day</div>
 	{% for i in today %}
 		<div class = "spacer">
 		<a href = "/item/{{i.id}}">
@@ -51,7 +51,7 @@
 
 
 {% if yesterday[0] %}
-	<div class = "date">yesterday</div>
+	<div class = "date">< 2 days</div>
 	{% for i in yesterday %}
 		<div class = "spacer">
 		<a href = "/item/{{i.id}}">
