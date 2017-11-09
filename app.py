@@ -315,8 +315,8 @@ def edit(itemID):
 
             word.category = request.form['category']
 
-            if request.form['definition'] != "":
-                word.definition = request.form['definition'].lower()
+            if request.form['entry'] != "":
+                word.definition = request.form['entry'].lower()
 
             session.add(word)
             session.commit()
