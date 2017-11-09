@@ -6,8 +6,6 @@ TO DO:
 
 -- update add/edit screens
 
--- dedicated category screens
-
 -- better UX on login
 
 -- Make sure everything is mobile responsive, relatively. should work well on a mobile phone

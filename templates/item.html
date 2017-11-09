@@ -10,10 +10,12 @@
 		I was {% if item.category!='touching' %}{{ item.category }}{%else%}feeling the touch of{%endif%}
 		{{item.entry}}
 		<br><br>
-
-		{{item.time.hour}}:{%if item.time.minute<10%}0{%endif%}{{item.time.minute}}<br>
+		<span class = "datetime">
+		{{item.time.hour}}:{%if item.time.minute<10%}0{%endif%}{{item.time.minute}}
+		</span>
+		<span class = "datetime">
 		{{ item.time.year }}-{{ item.time.month }}-{{item.time.day}} 
-
+		</span>
 
 		{% if permitted %}
 
