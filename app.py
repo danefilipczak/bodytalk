@@ -31,9 +31,16 @@ from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
 import httplib2
 import json
+import sys
 from flask import make_response
 import requests
 from functools import wraps
+
+if sys.argv[1] == 'dev':
+    dbpath = 'sqlite:///bodytalkdev3.db'
+elif sys.argv[1] == 'dep':
+    dbpath = ''
+
 
 maxItems = 50 #max number of items on any one page
 
@@ -42,7 +49,8 @@ auth = HTTPBasicAuth()
 CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())[
     'web']['client_id']
 
-engine = create_engine('sqlite:///bodytalkdev2.db')
+engine = create_engine(dbpath)
+Base.metadata.create_all(engine)
 
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
