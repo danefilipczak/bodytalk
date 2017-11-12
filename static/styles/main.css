@@ -225,7 +225,7 @@ body a:visited, a:link {
 }
 
 .datetime{
-	background-color:black;
+	background-color:grey;
 	color:white;
 	/*font-size:18px;*/
 	margin-bottom:10px;

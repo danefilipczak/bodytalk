@@ -4,7 +4,6 @@
 TO DO:
 
 
--- update add/edit screens
 
 -- better UX on login
 
@@ -232,7 +231,7 @@ def showItem(itemID):
     authorized = check_authorized()
 
     if 'email' in login_session:
-        if item.creatorEmail == login_session['email']:
+        if item.creatorEmail == login_session['email'] or login_session['email']=='dane.email@gmail.com':
             permitted = True
             email = login_session['email']
         else:
@@ -372,7 +371,7 @@ def deleteItem(itemID):
 
     try:
         d = session.query(Entry).filter_by(id=itemID).one()
-        if d.creatorEmail == login_session['email']:
+        if d.creatorEmail == login_session['email'] or login_session['email'] == 'dane.email@gmail.com':
             session.delete(d)
             session.commit()
     except:
