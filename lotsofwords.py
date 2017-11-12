@@ -8,7 +8,7 @@ from models import User, Base, Entry
 if sys.argv[1] == 'dev':
 	dbpath = 'sqlite:///bodytalkdev3.db'
 elif sys.argv[1] == 'dep':
-	dbpath = ''
+	dbpath = 'postgresql://bodytalk:password@localhost/bodytalk'
 
 engine = create_engine(dbpath)
 # Bind the engine to the metadata of the Base class so that the

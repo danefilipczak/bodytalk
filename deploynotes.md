@@ -1,5 +1,8 @@
 
-available on port 2200 at http://18.221.56.77 
+<!-- available on port 2200 at http://18.221.56.77  -->
+
+
+make sure you change the security group on amazon to allow for http access
 
 # configurations 
 
@@ -18,7 +21,7 @@ https://www.digitalocean.com/community/tutorials/how-to-set-up-a-firewall-with-u
 
 # installed via apt-get
 
-Apache, Postgresql, mod_wsgi, git
+Apache (apache2), Postgresql (postgresql), mod_wsgi (libapache2-mod-wsgi), git
 
 # installed via pip  
 
