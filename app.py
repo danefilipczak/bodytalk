@@ -36,10 +36,15 @@ from flask import make_response
 import requests
 from functools import wraps
 
-if sys.argv[1] == 'dev':
-    dbpath = 'sqlite:///bodytalkdev3.db'
-elif sys.argv[1] == 'dep':
+# if sys.argv[1] == 'dev':
+#     dbpath = 'sqlite:///bodytalkdev3.db'
+# elif sys.argv[1] == 'dep':
+#     dbpath = ''
+
+if __name__ != '__main__':
     dbpath = ''
+else:
+    dbpath = 'sqlite:///bodytalkdev3.db'
 
 
 maxItems = 50 #max number of items on any one page
