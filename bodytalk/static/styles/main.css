@@ -23,6 +23,8 @@ body a:visited, a:link {
 	color:white;
 	vertical-align:bottom;
 	text-align:right;
+
+	/*text-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);*/
 }
 
 .header span {
@@ -32,6 +34,7 @@ body a:visited, a:link {
 }
 
 .header a:visited, a:link {
+	/*text-shadow: 2px 2px #ff0000;*/
     text-decoration: none;
     color:white;
 }
@@ -73,6 +76,7 @@ body a:visited, a:link {
 
 .title{
 	padding-right:50px;
+
 }
 
 .flash{
@@ -163,6 +167,7 @@ body a:visited, a:link {
 	/*height:50%;*/
 	/*overflow:scroll;*/
 	background-color:rgba(208, 190, 190, 0.74);
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 
@@ -248,6 +253,8 @@ body a:visited, a:link {
 	/*margin:50px;*/
 	padding:15px;
 	max-width:250px;
+	/*box-shadow: 5px 5px 5px grey;*/
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 
