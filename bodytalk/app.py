@@ -36,13 +36,14 @@ from flask import make_response
 import requests
 from functools import wraps
 
-if sys.argv[1] == 'dev':
-    dbpath = 'sqlite:///bodytalkdev3.db'
-elif sys.argv[1] == 'dep':
-    dbpath = 'postgresql://bodytalk:password@localhost/bodytalk'
-
-if __name__ != '__main__': #if being called by wsgi/apache
-    dbpath = 'postgresql://bodytalk:password@localhost/bodytalk'
+try:
+    if sys.argv[1] == 'dev':
+        dbpath = 'sqlite:///bodytalkdev3.db'
+    elif sys.argv[1] == 'dep':
+        dbpath = 'postgresql://bodytalk:password@localhost/bodytalk'
+except:
+    if __name__ != '__main__': #if being called by wsgi/apache
+        dbpath = 'postgresql://bodytalk:password@localhost/bodytalk'
 # else:
 #     dbpath = 'sqlite:///bodytalkdev3.db'
 
@@ -51,7 +52,10 @@ maxItems = 50 #max number of items on any one page
 
 auth = HTTPBasicAuth()
 
-CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())[
+import os 
+dir_path = os.path.dirname(os.path.realpath(__file__))
+
+CLIENT_ID = json.loads(open(dir_path + '/' +  'client_secrets.json', 'r').read())[
     'web']['client_id']
 
 engine = create_engine(dbpath)
